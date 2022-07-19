@@ -12646,7 +12646,7 @@ var ReactModalAdapterBase = /*#__PURE__*/function (_AdapterBase) {
   }, {
     key: "hasAccess",
     value: function hasAccess(type) {
-      return this.access.indexOf(type) > 0;
+      return this.access.indexOf(type) >= 0;
     }
   }, {
     key: "hasCustomButtons",
@@ -12797,7 +12797,7 @@ var ReactModalAdapterBase = /*#__PURE__*/function (_AdapterBase) {
           style: {
             cursor: 'pointer'
           }
-        }, /*#__PURE__*/_react["default"].createElement(_icons.DeleteOutlined, null), " ".concat(adapter.gt('Delete'))), adapter.hasAccess('save') && /*#__PURE__*/_react["default"].createElement(_antd.Tag, {
+        }, /*#__PURE__*/_react["default"].createElement(_icons.DeleteOutlined, null), " ".concat(adapter.gt('Delete'))), adapter.hasAccess('save') && adapter.showAddNew && /*#__PURE__*/_react["default"].createElement(_antd.Tag, {
           color: "cyan",
           onClick: function onClick() {
             return modJs.copyRow(record.id);
@@ -12934,6 +12934,16 @@ var ReactModalAdapterBase = /*#__PURE__*/function (_AdapterBase) {
         }, []);
         return item;
       });
+    }
+  }, {
+    key: "hasCustomTopButtons",
+    value: function hasCustomTopButtons() {
+      return false;
+    }
+  }, {
+    key: "getCustomTopButtons",
+    value: function getCustomTopButtons() {
+      return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null);
     }
   }, {
     key: "getFormOptions",
@@ -16147,6 +16157,8 @@ var IceSelect = /*#__PURE__*/function (_React$Component) {
         } catch (e) {
           value = [];
         }
+      } else {
+        value = value ? value.toString() : value;
       }
 
       return /*#__PURE__*/_react["default"].createElement(_antd.Select, {
@@ -17260,7 +17272,7 @@ var IceTable = /*#__PURE__*/function (_React$Component) {
       }, /*#__PURE__*/_react["default"].createElement(_antd.Space, null, this.props.adapter.hasAccess('save') && this.props.adapter.getShowAddNew() && /*#__PURE__*/_react["default"].createElement(_antd.Button, {
         type: "primary",
         onClick: this.addNew
-      }, /*#__PURE__*/_react["default"].createElement(_icons.PlusCircleOutlined, null), " Add New"), this.props.adapter.getFilters() && /*#__PURE__*/_react["default"].createElement(_antd.Button, {
+      }, /*#__PURE__*/_react["default"].createElement(_icons.PlusCircleOutlined, null), " Add New"), this.props.adapter.hasCustomTopButtons() && this.props.adapter.getCustomTopButtons(), this.props.adapter.getFilters() && /*#__PURE__*/_react["default"].createElement(_antd.Button, {
         onClick: this.showFilters
       }, /*#__PURE__*/_react["default"].createElement(_icons.FilterOutlined, null), " Filters"), this.state.fetchCompleted && this.props.adapter.getFilters() && this.props.adapter.filter != null && this.props.adapter.filter !== [] && this.props.adapter.filter !== '' && this.props.adapter.getFilterString(this.props.adapter.filter) !== '' && /*#__PURE__*/_react["default"].createElement(_antd.Tag, {
         closable: true,
@@ -17820,12 +17832,35 @@ var TaskList = /*#__PURE__*/function (_React$Component) {
     value: function createTask(task, index) {
       var _this3 = this;
 
-      if (task.priority === 100) {
+      if (task.priority === 1000) {
         return /*#__PURE__*/_react["default"].createElement(_antd.Timeline.Item, {
+          key: index,
           onMouseEnter: function onMouseEnter() {
             return _this3.handleTaskHover(index);
           },
-          dot: /*#__PURE__*/_react["default"].createElement(_icons.ClockCircleOutlined, {
+          dot: /*#__PURE__*/_react["default"].createElement(_icons.AlertTwoTone, {
+            style: {
+              fontSize: '16px'
+            },
+            twoToneColor: "red"
+          })
+        }, this.getText(task), task.link && this.state.tasks[index] && /*#__PURE__*/_react["default"].createElement(_antd.Button, {
+          type: "link",
+          onClick: function onClick() {
+            return _this3.visitLink(task.link);
+          }
+        }, /*#__PURE__*/_react["default"].createElement(_icons.MedicineBoxOutlined, {
+          style: {
+            fontSize: '16px'
+          }
+        }), ' ', task.action));
+      } else if (task.priority === 100) {
+        return /*#__PURE__*/_react["default"].createElement(_antd.Timeline.Item, {
+          key: index,
+          onMouseEnter: function onMouseEnter() {
+            return _this3.handleTaskHover(index);
+          },
+          dot: /*#__PURE__*/_react["default"].createElement(_icons.FireOutlined, {
             style: {
               fontSize: '16px'
             }
@@ -17841,10 +17876,31 @@ var TaskList = /*#__PURE__*/function (_React$Component) {
             fontSize: '16px'
           }
         }), ' ', task.action));
-      }
-
-      if (task.priority === 50) {
+      } else if (task.priority === 50) {
         return /*#__PURE__*/_react["default"].createElement(_antd.Timeline.Item, {
+          key: index,
+          onMouseEnter: function onMouseEnter() {
+            return _this3.handleTaskHover(index);
+          },
+          dot: /*#__PURE__*/_react["default"].createElement(_icons.WarningTwoTone, {
+            style: {
+              fontSize: '16px'
+            },
+            twoToneColor: "#f57b42"
+          })
+        }, this.getText(task), task.link && this.state.tasks[index] && /*#__PURE__*/_react["default"].createElement(_antd.Button, {
+          type: "link",
+          onClick: function onClick() {
+            return _this3.visitLink(task.link);
+          }
+        }, /*#__PURE__*/_react["default"].createElement(_icons.MedicineBoxOutlined, {
+          style: {
+            fontSize: '16px'
+          }
+        }), ' ', task.action));
+      } else if (task.priority === 20) {
+        return /*#__PURE__*/_react["default"].createElement(_antd.Timeline.Item, {
+          key: index,
           onMouseEnter: function onMouseEnter() {
             return _this3.handleTaskHover(index);
           },
@@ -17864,33 +17920,9 @@ var TaskList = /*#__PURE__*/function (_React$Component) {
             fontSize: '16px'
           }
         }), ' ', task.action));
-      }
-
-      if (task.priority === 20) {
+      } else if (task.priority === 10) {
         return /*#__PURE__*/_react["default"].createElement(_antd.Timeline.Item, {
-          onMouseEnter: function onMouseEnter() {
-            return _this3.handleTaskHover(index);
-          },
-          dot: /*#__PURE__*/_react["default"].createElement(_icons.PlusCircleOutlined, {
-            style: {
-              fontSize: '16px'
-            }
-          }),
-          color: "blue"
-        }, this.getText(task), task.link && this.state.tasks[index] && /*#__PURE__*/_react["default"].createElement(_antd.Button, {
-          type: "link",
-          onClick: function onClick() {
-            return _this3.visitLink(task.link);
-          }
-        }, /*#__PURE__*/_react["default"].createElement(_icons.MedicineBoxOutlined, {
-          style: {
-            fontSize: '16px'
-          }
-        }), ' ', task.action));
-      }
-
-      if (task.priority === 10) {
-        return /*#__PURE__*/_react["default"].createElement(_antd.Timeline.Item, {
+          key: index,
           onMouseEnter: function onMouseEnter() {
             return _this3.handleTaskHover(index);
           },
@@ -18284,15 +18316,23 @@ exports["default"] = _default;
 
 var _lib = require("./lib");
 
-window.AttendanceAdapter = _lib.AttendanceAdapter;
-window.EmployeeAttendanceSheetAdapter = _lib.EmployeeAttendanceSheetAdapter;
+var _IceDataPipe = _interopRequireDefault(require("../../../api/IceDataPipe"));
 
-},{"./lib":79}],79:[function(require,module,exports){
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+window.AttendanceAdapter = _lib.AttendanceAdapter;
+window.IceDataPipe = _IceDataPipe["default"];
+
+},{"../../../api/IceDataPipe":47,"./lib":79}],79:[function(require,module,exports){
 "use strict";
 
-var _AdapterBase3 = _interopRequireDefault(require("../../../api/AdapterBase"));
+var _ReactModalAdapterBase = _interopRequireDefault(require("../../../api/ReactModalAdapterBase"));
 
-var _FormValidation = _interopRequireDefault(require("../../../api/FormValidation"));
+var _antd = require("antd");
+
+var _react = _interopRequireDefault(require("react"));
+
+var _icons = require("@ant-design/icons");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -18318,8 +18358,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var AttendanceAdapter = /*#__PURE__*/function (_AdapterBase) {
-  _inherits(AttendanceAdapter, _AdapterBase);
+var Text = _antd.Typography.Text;
+
+var AttendanceAdapter = /*#__PURE__*/function (_ReactModalAdapterBas) {
+  _inherits(AttendanceAdapter, _ReactModalAdapterBas);
 
   var _super = _createSuper(AttendanceAdapter);
 
@@ -18331,30 +18373,30 @@ var AttendanceAdapter = /*#__PURE__*/function (_AdapterBase) {
     _this = _super.call(this, endPoint, tab, filter, orderBy);
     _this.punch = null;
     _this.useServerTime = 0;
-    _this.photoTaken = 0;
-    _this.photoAttendance = 0;
+    _this.hasOpenPunch = 0;
+    _this.punchedOutToday = 0;
     return _this;
   }
 
   _createClass(AttendanceAdapter, [{
-    key: "updatePunchButton",
-    value: function updatePunchButton() {
-      this.getPunch('changePunchButtonSuccessCallBack');
-    }
-  }, {
     key: "setUseServerTime",
     value: function setUseServerTime(val) {
       this.useServerTime = val;
     }
   }, {
-    key: "setPhotoAttendance",
-    value: function setPhotoAttendance(val) {
-      this.photoAttendance = parseInt(val, 10);
+    key: "setHasOpenPunch",
+    value: function setHasOpenPunch(val) {
+      this.hasOpenPunch = val;
+    }
+  }, {
+    key: "setPunchedOutToday",
+    value: function setPunchedOutToday(val) {
+      this.punchedOutToday = val;
     }
   }, {
     key: "getDataMapping",
     value: function getDataMapping() {
-      return ['id', 'in_time', 'out_time', 'note'];
+      return ['id', 'in_time', 'out_time', 'hours', 'note'];
     }
   }, {
     key: "getHeaders",
@@ -18368,6 +18410,51 @@ var AttendanceAdapter = /*#__PURE__*/function (_AdapterBase) {
         sTitle: 'Time-Out'
       }, {
         sTitle: 'Note'
+      }];
+    }
+  }, {
+    key: "getTableColumns",
+    value: function getTableColumns() {
+      var dateRenderer = function dateRenderer(text, record) {
+        if (text === '0000-00-00 00:00:00' || text === '' || text === undefined || text == null) {
+          return '';
+        }
+
+        return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, /*#__PURE__*/_react["default"].createElement(Text, {
+          code: true
+        }, Date.parse(text).toString('yyyy MMM d')), /*#__PURE__*/_react["default"].createElement(Text, {
+          strong: true
+        }, Date.parse(text).toString('HH:mm')));
+      };
+
+      return [{
+        title: 'Time-in',
+        dataIndex: 'in_time',
+        render: dateRenderer,
+        sorter: true
+      }, {
+        title: 'Time-out',
+        dataIndex: 'out_time',
+        render: dateRenderer,
+        sorter: true
+      }, {
+        title: 'Hours',
+        render: function render(text, record) {
+          return /*#__PURE__*/_react["default"].createElement(_antd.Progress, {
+            size: "small",
+            steps: 25,
+            percent: record.hours ? record.hours / 8 * 100 : 0,
+            format: function format(percent, successPercent) {
+              return record.hours + 'h / 8h';
+            }
+          });
+        },
+        width: '25%',
+        dataIndex: 'hours'
+      }, {
+        title: 'Note',
+        dataIndex: 'note',
+        sorter: true
       }];
     }
   }, {
@@ -18397,170 +18484,70 @@ var AttendanceAdapter = /*#__PURE__*/function (_AdapterBase) {
       }]];
     }
   }, {
-    key: "getCustomTableParams",
-    value: function getCustomTableParams() {
+    key: "hasCustomTopButtons",
+    value: function hasCustomTopButtons() {
+      return true;
+    }
+  }, {
+    key: "getCustomTopButtons",
+    value: function getCustomTopButtons() {
+      var btnLabel = 'Punch In';
+
+      if (!this.hasOpenPunch && this.punchedOutToday) {
+        btnLabel = 'Punch In Again';
+      } else if (this.hasOpenPunch) {
+        btnLabel = 'Punch Out';
+      } else if (!this.hasOpenPunch) {
+        btnLabel = 'Punch In';
+      }
+
+      return /*#__PURE__*/_react["default"].createElement(_antd.Button, {
+        type: "primary",
+        onClick: function onClick() {
+          return modJs.showPunchDialog();
+        }
+      }, /*#__PURE__*/_react["default"].createElement(_icons.PlusCircleOutlined, null), btnLabel);
+    }
+  }, {
+    key: "add",
+    value: function add(object, getFunctionCallBackData, callGetFunction, successCallback) {
       var that = this;
-      var dataTableParams = {
-        aoColumnDefs: [{
-          fnRender: function fnRender(data, cell) {
-            return that.preProcessRemoteTableData(data, cell, 1);
-          },
-          aTargets: [1]
-        }, {
-          fnRender: function fnRender(data, cell) {
-            return that.preProcessRemoteTableData(data, cell, 2);
-          },
-          aTargets: [2]
-        }, {
-          fnRender: function fnRender(data, cell) {
-            return that.preProcessRemoteTableData(data, cell, 3);
-          },
-          aTargets: [3]
-        }, {
-          fnRender: that.getActionButtons,
-          aTargets: [that.getDataMapping().length]
-        }]
-      };
-      return dataTableParams;
-    }
-  }, {
-    key: "preProcessRemoteTableData",
-    value: function preProcessRemoteTableData(data, cell, id) {
-      if (id === 1) {
-        if (cell === '0000-00-00 00:00:00' || cell === '' || cell === undefined || cell === null) {
-          return '';
-        }
-
-        return Date.parse(cell).toString('yyyy MMM d  <b>HH:mm</b>');
-      }
-
-      if (id === 2) {
-        if (cell === '0000-00-00 00:00:00' || cell === '' || cell === undefined || cell === null) {
-          return '';
-        }
-
-        return Date.parse(cell).toString('MMM d  <b>HH:mm</b>');
-      }
-
-      if (id === 3) {
-        if (cell !== undefined && cell !== null) {
-          if (cell.length > 20) {
-            return "".concat(cell.substring(0, 20), "..");
-          }
-        }
-
-        return cell;
-      }
-
-      return cell;
-    }
-  }, {
-    key: "getActionButtonsHtml",
-    value: function getActionButtonsHtml(id, data) {
-      return '';
-    }
-  }, {
-    key: "getTableTopButtonHtml",
-    value: function getTableTopButtonHtml() {
-      if (this.punch === null || this.punch === undefined) {
-        return '<button id="punchButton" style="float:right;" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-in <span class="icon-time"></span></button>';
-      }
-
-      return '<button id="punchButton" style="float:right;" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-out <span class="icon-time"></span></button>';
-    }
-  }, {
-    key: "save",
-    value: function save() {
-      var that = this;
-      var validator = new _FormValidation["default"]("".concat(this.getTableName(), "_submit"), true, {
-        ShowPopup: false,
-        LabelErrorClass: 'error'
-      });
-
-      if (validator.checkValues()) {
-        var msg = this.doCustomValidation();
-
-        if (msg == null) {
-          var params = validator.getFormParameters();
-          params = this.forceInjectValuesBeforeSave(params);
-          params.cdate = this.getClientDate(new Date()).toISOString().slice(0, 19).replace('T', ' ');
-          var reqJson = JSON.stringify(params);
-          var callBackData = [];
-          callBackData.callBackData = [];
-          callBackData.callBackSuccess = 'saveSuccessCallback';
-          callBackData.callBackFail = 'getPunchFailCallBack';
-          this.customAction('savePunch', 'modules=attendance', reqJson, callBackData, true);
-        } else {
-          $("#".concat(this.getTableName(), "Form .label")).html(msg);
-          $("#".concat(this.getTableName(), "Form .label")).show();
-        }
-      }
+      var params = object;
+      params = this.forceInjectValuesBeforeSave(params);
+      params.cdate = this.getClientDate(new Date()).toISOString().slice(0, 19).replace('T', ' ');
+      var reqJson = JSON.stringify(params);
+      var callBackData = [];
+      callBackData.callBackData = [];
+      callBackData.callBackSuccess = 'saveSuccessCallback';
+      callBackData.callBackFail = 'getPunchFailCallBack';
+      this.customAction('savePunch', 'modules=attendance', reqJson, callBackData, true);
+      callGetFunction();
+      successCallback();
     }
   }, {
     key: "saveSuccessCallback",
     value: function saveSuccessCallback(callBackData) {
-      this.punch = callBackData;
-      this.getPunch('changePunchButtonSuccessCallBack');
-      $('#PunchModel').modal('hide');
       this.get([]);
-    }
-  }, {
-    key: "cancel",
-    value: function cancel() {
-      $('#PunchModel').modal('hide');
+
+      if (this.hasOpenPunch) {
+        this.hasOpenPunch = 0;
+      } else {
+        this.hasOpenPunch = 1;
+      }
+
+      if (this.hasOpenPunch && !this.punchedOutToday) {
+        this.punchedOutToday = 1;
+      }
     }
   }, {
     key: "showPunchDialog",
     value: function showPunchDialog() {
-      this.getPunch('showPunchDialogShowPunchSuccessCallBack');
-    }
-  }, {
-    key: "getPunch",
-    value: function getPunch(successCallBack) {
-      var that = this;
-      var object = {};
-      object.date = this.getClientDate(new Date()).toISOString().slice(0, 19).replace('T', ' ');
-      object.offset = this.getClientGMTOffset();
-      var reqJson = JSON.stringify(object);
-      var callBackData = [];
-      callBackData.callBackData = [];
-      callBackData.callBackSuccess = successCallBack;
-      callBackData.callBackFail = 'getPunchFailCallBack';
-      this.customAction('getPunch', 'modules=attendance', reqJson, callBackData);
-    }
-  }, {
-    key: "showPunchDialogShowPunchSuccessCallBack",
-    value: function showPunchDialogShowPunchSuccessCallBack(callBackData) {
-      this.punch = callBackData;
-      $('#PunchModel').modal('show');
-
-      if (this.punch === null) {
-        $('#PunchModel').find('h3').html('Punch Time-in');
-        modJs.renderForm();
-      } else {
-        $('#PunchModel').find('h3').html('Punch Time-out');
-        modJs.renderForm(this.punch);
-      }
-
-      $('#Attendance').show();
-      var picker = $('#time_datetime').data('datetimepicker');
-      picker.setLocalDate(new Date());
-    }
-  }, {
-    key: "changePunchButtonSuccessCallBack",
-    value: function changePunchButtonSuccessCallBack(callBackData) {
-      this.punch = callBackData;
-
-      if (this.punch === null) {
-        $('#punchButton').html('Punch-in <span class="icon-time"></span>');
-      } else {
-        $('#punchButton').html('Punch-out <span class="icon-time"></span>');
-      }
+      modJs.renderForm();
     }
   }, {
     key: "getPunchFailCallBack",
     value: function getPunchFailCallBack(callBackData) {
-      this.showMessage('Error Occured while Time Punch', callBackData);
+      this.showMessage('Error Occurred while Time Punch', callBackData);
     }
   }, {
     key: "getClientDate",
@@ -18578,287 +18565,16 @@ var AttendanceAdapter = /*#__PURE__*/function (_AdapterBase) {
       var jan2 = new Date(temp.substring(0, temp.lastIndexOf(' ') - 1));
       return (jan1 - jan2) / (1000 * 60 * 60);
     }
-  }, {
-    key: "doCustomValidation",
-    value: function doCustomValidation(params) {
-      if (this.photoAttendance === 1 && !this.photoTaken) {
-        return 'Please attach a photo before submitting';
-      }
-
-      return null;
-    }
-  }, {
-    key: "forceInjectValuesBeforeSave",
-    value: function forceInjectValuesBeforeSave(params) {
-      if (this.photoAttendance === 1) {
-        var canvas = document.getElementById('attendnaceCanvas');
-        params.image = canvas.toDataURL();
-      }
-
-      return params;
-    }
-  }, {
-    key: "postRenderForm",
-    value: function postRenderForm() {
-      if (this.photoAttendance === 1) {
-        $('.photoAttendance').show();
-        var video = document.getElementById('attendnaceVideo'); // Get access to the camera!
-
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          navigator.mediaDevices.getUserMedia({
-            video: true
-          }).then(function (stream) {
-            //video.src = (window.URL ? window.URL : webkitURL).createObjectURL(stream);
-            video.srcObject = stream;
-            video.play();
-          });
-        }
-
-        this.photoTaken = false;
-        this.configureEvents();
-      } else {
-        $('.photoAttendance').remove();
-      }
-    }
-  }, {
-    key: "configureEvents",
-    value: function configureEvents() {
-      var that = this;
-      var canvas = document.getElementById('attendnaceCanvas');
-      var context = canvas.getContext('2d');
-      var video = document.getElementById('attendnaceVideo');
-      $('.attendnaceSnap').click(function () {
-        context.drawImage(video, 0, 0, 208, 156);
-        that.photoTaken = true;
-        return false;
-      });
-    }
   }]);
 
   return AttendanceAdapter;
-}(_AdapterBase3["default"]);
-
-var EmployeeAttendanceSheetAdapter = /*#__PURE__*/function (_AdapterBase2) {
-  _inherits(EmployeeAttendanceSheetAdapter, _AdapterBase2);
-
-  var _super2 = _createSuper(EmployeeAttendanceSheetAdapter);
-
-  function EmployeeAttendanceSheetAdapter(endPoint, tab, filter, orderBy) {
-    var _this2;
-
-    _classCallCheck(this, EmployeeAttendanceSheetAdapter);
-
-    _this2 = _super2.call(this, endPoint, tab, filter, orderBy);
-    _this2.currentTimesheetId = null;
-    _this2.currentTimesheet = null;
-    return _this2;
-  }
-
-  _createClass(EmployeeAttendanceSheetAdapter, [{
-    key: "getDataMapping",
-    value: function getDataMapping() {
-      return ['id', 'date_start', 'date_end', 'total_time', 'status'];
-    }
-  }, {
-    key: "getHeaders",
-    value: function getHeaders() {
-      return [{
-        sTitle: 'ID',
-        bVisible: false
-      }, {
-        sTitle: 'Start Date'
-      }, {
-        sTitle: 'End Date'
-      }, {
-        sTitle: 'Total Time'
-      }, {
-        sTitle: 'Status'
-      }];
-    }
-  }, {
-    key: "getFormFields",
-    value: function getFormFields() {
-      return [['id', {
-        label: 'ID',
-        type: 'hidden'
-      }], ['date_start', {
-        label: 'TimeSheet Start Date',
-        type: 'date',
-        validation: ''
-      }], ['date_end', {
-        label: 'TimeSheet End Date',
-        type: 'date',
-        validation: ''
-      }], ['details', {
-        label: 'Reason',
-        type: 'textarea',
-        validation: 'none'
-      }]];
-    }
-  }, {
-    key: "preProcessTableData",
-    value: function preProcessTableData(row) {
-      row[1] = Date.parse(row[1]).toString('MMM d, yyyy (dddd)');
-      row[2] = Date.parse(row[2]).toString('MMM d, yyyy (dddd)');
-      return row;
-    }
-  }, {
-    key: "renderForm",
-    value: function renderForm(object) {
-      var formHtml = this.templates.formTemplate;
-      var html = '';
-      $("#".concat(this.getTableName(), "Form")).html(formHtml);
-      $("#".concat(this.getTableName(), "Form")).show();
-      $("#".concat(this.getTableName())).hide();
-      $('#attendnacesheet_start').html(Date.parse(object.date_start).toString('MMM d, yyyy (dddd)'));
-      $('#attendnacesheet_end').html(Date.parse(object.date_end).toString('MMM d, yyyy (dddd)'));
-      this.currentTimesheet = object;
-      this.getTimeEntries();
-    }
-  }, {
-    key: "getTimeEntries",
-    value: function getTimeEntries() {
-      var timesheetId = this.currentId;
-      var sourceMappingJson = JSON.stringify(modJsList.tabEmployeeTimeEntry.getSourceMapping());
-      var reqJson = JSON.stringify({
-        id: timesheetId,
-        sm: sourceMappingJson
-      });
-      var callBackData = [];
-      callBackData.callBackData = [];
-      callBackData.callBackSuccess = 'getTimeEntriesSuccessCallBack';
-      callBackData.callBackFail = 'getTimeEntriesFailCallBack';
-      this.customAction('getTimeEntries', 'modules=time_sheets', reqJson, callBackData);
-    }
-  }, {
-    key: "getTimeEntriesSuccessCallBack",
-    value: function getTimeEntriesSuccessCallBack(callBackData) {
-      var entries = callBackData;
-      var html = '';
-      var temp = '<tr><td><img class="tableActionButton" src="_BASE_images/delete.png" style="cursor:pointer;" rel="tooltip" title="Delete" onclick="modJsList[\'tabEmployeeTimeEntry\'].deleteRow(_id_);return false;"></img></td><td>_start_</td><td>_end_</td><td>_duration_</td><td>_project_</td><td>_details_</td>';
-
-      for (var i = 0; i < entries.length; i++) {
-        try {
-          var t = temp;
-          t = t.replace(/_start_/g, Date.parse(entries[i].date_start).toString('MMM d, yyyy [hh:mm tt]'));
-          t = t.replace(/_end_/g, Date.parse(entries[i].date_end).toString('MMM d, yyyy [hh:mm tt]'));
-          var mili = Date.parse(entries[i].date_end) - Date.parse(entries[i].date_start);
-          var minutes = Math.round(mili / 60000);
-          var hourMinutes = minutes % 60;
-          var hours = (minutes - hourMinutes) / 60;
-          t = t.replace(/_duration_/g, "Hours (".concat(hours, ") - Min (").concat(hourMinutes, ")"));
-
-          if (entries[i].project === 'null' || entries[i].project === null || entries[i].project === undefined) {
-            t = t.replace(/_project_/g, 'None');
-          } else {
-            t = t.replace(/_project_/g, entries[i].project);
-          }
-
-          t = t.replace(/_project_/g, entries[i].project);
-          t = t.replace(/_details_/g, entries[i].details);
-          t = t.replace(/_id_/g, entries[i].id);
-          t = t.replace(/_BASE_/g, this.baseUrl);
-          html += t;
-        } catch (e) {// DN
-        }
-      }
-
-      $('.timesheet_entries_table_body').html(html);
-
-      if (modJs.getTableName() === 'SubEmployeeTimeSheetAll') {
-        $('#submit_sheet').hide();
-        $('#add_time_sheet_entry').hide();
-      } else if (this.currentElement.status === 'Approved') {
-        $('#submit_sheet').hide();
-        $('#add_time_sheet_entry').hide();
-      } else {
-        $('#submit_sheet').show();
-        $('#add_time_sheet_entry').show();
-      }
-    }
-  }, {
-    key: "getTimeEntriesFailCallBack",
-    value: function getTimeEntriesFailCallBack(callBackData) {
-      this.showMessage('Error', 'Error occured while getting timesheet entries');
-    }
-  }, {
-    key: "createPreviousAttendnacesheet",
-    value: function createPreviousAttendnacesheet(id) {
-      var reqJson = JSON.stringify({
-        id: id
-      });
-      var callBackData = [];
-      callBackData.callBackData = [];
-      callBackData.callBackSuccess = 'createPreviousAttendnacesheetSuccessCallBack';
-      callBackData.callBackFail = 'createPreviousAttendnacesheetFailCallBack';
-      this.customAction('createPreviousAttendnaceSheet', 'modules=attendnace', reqJson, callBackData);
-    }
-  }, {
-    key: "createPreviousAttendnacesheetSuccessCallBack",
-    value: function createPreviousAttendnacesheetSuccessCallBack(callBackData) {
-      $('.tooltip').css('display', 'none');
-      $('.tooltip').remove(); // this.showMessage("Success", "Previous Timesheet created");
-
-      this.get([]);
-    }
-  }, {
-    key: "createPreviousAttendnacesheetFailCallBack",
-    value: function createPreviousAttendnacesheetFailCallBack(callBackData) {
-      this.showMessage('Error', callBackData);
-    }
-  }, {
-    key: "getActionButtonsHtml",
-    value: function getActionButtonsHtml(id, data) {
-      var html = '';
-
-      if (this.getTableName() === 'EmployeeTimeSheetAll') {
-        html = '<div style="width:80px;"><img class="tableActionButton" src="_BASE_images/view.png" style="cursor:pointer;" rel="tooltip" title="Edit Timesheet Entries" onclick="modJs.edit(_id_);return false;"></img><img class="tableActionButton" src="_BASE_images/redo.png" style="cursor:pointer;margin-left:15px;" rel="tooltip" title="Create previous time sheet" onclick="modJs.createPreviousAttendnacesheet(_id_);return false;"></img></div>';
-      } else {
-        html = '<div style="width:80px;"><img class="tableActionButton" src="_BASE_images/view.png" style="cursor:pointer;" rel="tooltip" title="Edit Timesheet Entries" onclick="modJs.edit(_id_);return false;"></img></div>';
-      }
-
-      html = html.replace(/_id_/g, id);
-      html = html.replace(/_BASE_/g, this.baseUrl);
-      return html;
-    }
-  }, {
-    key: "getCustomTableParams",
-    value: function getCustomTableParams() {
-      var that = this;
-      var dataTableParams = {
-        aoColumnDefs: [{
-          fnRender: function fnRender(data, cell) {
-            return that.preProcessRemoteTableData(data, cell, 1);
-          },
-          aTargets: [1]
-        }, {
-          fnRender: function fnRender(data, cell) {
-            return that.preProcessRemoteTableData(data, cell, 2);
-          },
-          aTargets: [2]
-        }, {
-          fnRender: that.getActionButtons,
-          aTargets: [that.getDataMapping().length]
-        }]
-      };
-      return dataTableParams;
-    }
-  }, {
-    key: "preProcessRemoteTableData",
-    value: function preProcessRemoteTableData(data, cell, id) {
-      return Date.parse(cell).toString('MMM d, yyyy (dddd)');
-    }
-  }]);
-
-  return EmployeeAttendanceSheetAdapter;
-}(_AdapterBase3["default"]);
+}(_ReactModalAdapterBase["default"]);
 
 module.exports = {
-  AttendanceAdapter: AttendanceAdapter,
-  EmployeeAttendanceSheetAdapter: EmployeeAttendanceSheetAdapter
+  AttendanceAdapter: AttendanceAdapter
 };
 
-},{"../../../api/AdapterBase":40,"../../../api/FormValidation":45}],80:[function(require,module,exports){
+},{"../../../api/ReactModalAdapterBase":56,"@ant-design/icons":"@ant-design/icons","antd":"antd","react":"react"}],80:[function(require,module,exports){
 "use strict";
 
 var _lib = require("./lib");
@@ -20401,7 +20117,7 @@ var EmployeeAdapter = /*#__PURE__*/function (_ReactModalAdapterBas) {
       }], ['gender', {
         label: 'Gender',
         type: 'select',
-        source: [['Male', 'Male'], ['Female', 'Female'], ['Other', 'Other']]
+        source: [['Male', 'Male'], ['Female', 'Female'], ['Non-binary', 'Non-binary'], ['Other', 'Other']]
       }], ['marital_status', {
         label: 'Marital Status',
         type: 'select',
@@ -21543,6 +21259,13 @@ var SubordinateEmployeeOvertimeAdapter = /*#__PURE__*/function (_EmployeeOvertim
     _this3.modulePathName = 'overtime';
     return _this3;
   }
+
+  _createClass(SubordinateEmployeeOvertimeAdapter, [{
+    key: "isSubProfileTable",
+    value: function isSubProfileTable() {
+      return true;
+    }
+  }]);
 
   return SubordinateEmployeeOvertimeAdapter;
 }(_lib.EmployeeOvertimeAdminAdapter);

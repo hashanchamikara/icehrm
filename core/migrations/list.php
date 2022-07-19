@@ -1,5 +1,9 @@
 <?php
 $migrationList = [];
+$migrationList[] = 'v20220529_330001_google_map_api_key';
+$migrationList[] = 'v20220123_310008_remove_photo_att';
+$migrationList[] = 'v20220122_310007_career_progression';
+$migrationList[] = 'v20220122_310006_update_menu';
 $migrationList[] = 'v20220114_310005_performance_templates';
 $migrationList[] = 'v20211223_310004_document_visibility';
 $migrationList[] = 'v20211203_310002_performance_goals';
@@ -42,7 +46,6 @@ $migrationList[] = 'v20190707_260004_attendance_out_map';
 $migrationList[] = 'v20190630_260603_add_dept_leave_to_rule';
 $migrationList[] = 'v20190630_260602_add_leave_period_to_rule';
 $migrationList[] = 'v20190630_260601_update_module_names';
-$migrationList[] = 'v20190510_260004_add_hiring_manager_job';
 $migrationList[] = 'v20190509_260004_add_location_filed_to_job';
 $migrationList[] = 'v20190508_260004_update_time_zones';
 $migrationList[] = 'v20190125_260003_attendance_with_map';
